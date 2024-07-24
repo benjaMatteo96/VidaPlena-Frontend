@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './components/Home';
@@ -11,14 +10,14 @@ import CreateOrderItem from './components/order-items/CreateOrderItem';
 import EditOrderItem from './components/order-items/EditOrderItem';
 import DeleteOrderItem from './components/order-items/DeleteOrderItem';
 import Register from './components/Register';
-import Login from './components/Login';
+import Login from './components/Login';  // Corrige esta línea
 import AdminPanel from './components/AdminPanel';
-import { AuthProvider } from './contexts/AuthContext';
+import { UserProvider, UserContext } from './contexts/UserContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
-    <AuthProvider>
+    <UserProvider>
       <Router>
         <div className="container">
           <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -28,16 +27,33 @@ function App() {
                 <li className="nav-item">
                   <Link className="nav-link" to="/">Home</Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">Register</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
-                </li>
+                <UserContext.Consumer>
+                  {({ user, logout }) => (
+                    <>
+                      {!user && (
+                        <>
+                          <li className="nav-item">
+                            <Link className="nav-link" to="/register">Register</Link>
+                          </li>
+                          <li className="nav-item">
+                            <Link className="nav-link" to="/login">Login</Link>
+                          </li>
+                        </>
+                      )}
+                      {user && (
+                        <li className="nav-item">
+                          <button className="btn btn-link nav-link" onClick={logout}>Logout</button>
+                        </li>
+                      )}
+                    </>
+                  )}
+                </UserContext.Consumer>
               </ul>
             </div>
           </nav>
-          <AdminPanel />
+          <UserContext.Consumer>
+            {({ user }) => user && <AdminPanel />}
+          </UserContext.Consumer>
           <div className="mt-4">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -55,7 +71,7 @@ function App() {
           </div>
         </div>
       </Router>
-    </AuthProvider>
+    </UserProvider>
   );
 }
 

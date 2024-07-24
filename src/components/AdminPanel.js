@@ -1,11 +1,10 @@
-// src/components/AdminPanel.js
 import React, { useContext } from 'react';
-import { AuthContext } from '../contexts/AuthContext';
+import { UserContext } from '../contexts/UserContext';
 
 const AdminPanel = () => {
-  const { isAuthenticated } = useContext(AuthContext);
+  const { user } = useContext(UserContext);
 
-  if (!isAuthenticated) {
+  if (!user) {
     return null;
   }
 

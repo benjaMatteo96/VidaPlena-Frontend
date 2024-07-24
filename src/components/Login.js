@@ -1,20 +1,20 @@
 // src/components/Login.js
 import React, { useState, useContext } from 'react';
 import axiosInstance from '../services/axiosConfig';
-import { AuthContext } from '../contexts/AuthContext';
+import { UserContext } from '../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useContext(AuthContext);
+  const { login } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axiosInstance.post('/login/', { username, password });
-      login(response.data.token);
+      const response = await axiosInstance.post('/token/', { username, password });
+      login(response.data.access, response.data.refresh);
       navigate('/');
     } catch (error) {
       console.error('Login failed', error);
